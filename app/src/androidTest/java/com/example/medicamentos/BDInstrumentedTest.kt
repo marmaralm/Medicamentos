@@ -1,5 +1,6 @@
 package com.example.medicamentos
 
+import android.content.ContentValues
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -33,6 +34,14 @@ class BDInstrumentedTest {
         val appContext = getAppContext()
         assertEquals("com.example.medicamentos", appContext.packageName)
     }
+    @Test
+    fun consegueInserirCategorias(){
+        val openHelper = BDMedicamentosOpenHelper(getAppContext())
+        val bd = openHelper.writableDatabase
+        val classe = ContentValues()
 
+
+        //TabelaClasses(bd).insere()
+    }
 
 }
