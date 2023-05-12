@@ -1,5 +1,13 @@
 package com.example.medicamentos
 
-data class Medicamentos(var titulo: String, var idCategoria: Int, var isbn: String? = null, var id: Long= -1) {
+import android.content.ContentValues
 
+data class Medicamentos(var nome: String, var idCategoria: Long, var isbn: String? = null, var id: Long= -1) {
+    fun toContentValues() : ContentValues{
+        val valores = ContentValues()
+
+        valores.put(TabelaMedicamentos.CAMPO_NOME, nome)
+        valores.put(TabelaMedicamentos.CAMPO_ISBN, isbn)
+        valores.put(TabelaMedicamentos.CAMPO_FK_CATEGORIA, idCategoria)
+    }
 }
