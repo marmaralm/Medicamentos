@@ -2,6 +2,8 @@ package com.example.medicamentos
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.provider.BaseColumns
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -34,14 +36,63 @@ class BDInstrumentedTest {
         val appContext = getAppContext()
         assertEquals("com.example.medicamentos", appContext.packageName)
     }
+
+    private fun insereClasse(bd : SQLiteDatabase, classes: TabelaClasses){
+        val classe = ClasseFarmaceutica("Anti-inflamatório")
+        val id = TabelaClasses(bd).insere(classe.toContentValues())
+    }
     @Test
     fun consegueInserirCategorias(){
+        val bd = getWritableDataBase()
+
+        val classe = ClasseFarmaceutica("Antibiótico")
+
+        var id = TabelaClasses(bd).insere(classe.toContentValues())
+        assertNotEquals(-1, id)
+    }
+
+    private fun getWritableDataBase(): SQLiteDatabase {
         val openHelper = BDMedicamentosOpenHelper(getAppContext())
         val bd = openHelper.writableDatabase
-        val classe = ContentValues()
+        return bd
+    }
+
+    @Test
+    fun consegueInserirMedicamentos(){
+        val bd = getWritableDataBase()
+
+        val classe = ClasseFarmaceutica("Anti-inflamatório")
+        insereClasse(bd, classeAntiInflam)
+
+        val medicamentos
 
 
-        //TabelaClasses(bd).insere()
+    }
+
+    private fun insereMedicamento(bs:SQLiteDatabase, medicamentos: Medicamentos){
+        medicamentos.id = TabelaMedicamentos(bd).insere(medicamentos.toContentValues())
+        assertNotEquals(-1, medicamentos.id)
+    }
+
+    @Test
+    fun consegueLerClasses(){
+        val bd = getWritableDataBase()
+
+        val classe = ClasseFarmaceutica("Anti-hipertensor")
+        insereClasse(bd, classeAntiHipert)
+
+        val cursor = TabelaClasses(bd).consulta(TabelaClasses.CAMPOS, "${BaseColumns._ID}=?", arrayOf(classeAntihipert.id.toString()), null, null, null)
+
+        assert(cursor.moveToNext())
+
+        val classeBD = ClasseFarmaceutica.fromCursor(cursor)
+
+        assertEquals(classeAntihiper, classeBD)
+
+        val cursorTodasClasses = tabelaClasses.consulta()
+
+        assert(cursorTodasClasses.count>1)
+
     }
 
 }
